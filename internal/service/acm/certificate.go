@@ -226,7 +226,7 @@ func resourceCertificate() *schema.Resource {
 				Optional:         true,
 				Computed:         true,
 				ForceNew:         true,
-				ValidateDiagFunc: enum.Validate[types.ValidationMethod](),
+				ValidateDiagFunc: enum.Validate[ValidationMethodExtended](),
 				ConflictsWith:    []string{"certificate_authority_arn", "certificate_body", "certificate_chain", "private_key"},
 			},
 			"validation_option": {
@@ -961,4 +961,14 @@ type goHybridDurationValue struct {
 
 func (v goHybridDurationValue) SubFrom(t time.Time) time.Time {
 	return t.Add(-v.d)
+}
+
+type ValidationMethodExtended types.ValidationMethod
+
+func (ValidationMethodExtended) Values() []ValidationMethodExtended {
+	return []ValidationMethodExtended{
+		ValidationMethodExtended(types.ValidationMethodDns),
+		ValidationMethodExtended(types.ValidationMethodEmail),
+		ValidationMethodExtended(certificateValidationMethodNone),
+	}
 }
